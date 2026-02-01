@@ -308,7 +308,7 @@
                 <div>Agent</div>
                 <div>Score</div>
                 <div>Tier</div>
-                <div>Bounties</div>
+                <div>Activity</div>
             </div>
             <div id="leaderboard-body">
                 <div class="loading">Loading leaderboard...</div>
@@ -364,8 +364,15 @@
                         <span class="tier-name">${agent.tier.name}</span>
                     </div>
                     <div class="bounties">
-                        <div class="bounties-count">${agent.stats.bounties_completed}</div>
-                        <div class="bounties-label">completed</div>
+                        ${agent.stats.bounties_completed > 0 
+                            ? `<div class="bounties-count">${agent.stats.bounties_completed}</div>
+                               <div class="bounties-label">bounties</div>`
+                            : agent.stats.moltx_views > 0 
+                                ? `<div class="bounties-count">${formatViews(agent.stats.moltx_views)}</div>
+                                   <div class="bounties-label">views</div>`
+                                : `<div class="bounties-count">-</div>
+                                   <div class="bounties-label"></div>`
+                        }
                     </div>
                 </div>
             `).join('');
@@ -375,6 +382,12 @@
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
+        }
+        
+        function formatViews(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+            if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+            return num.toString();
         }
         
         loadLeaderboard();
